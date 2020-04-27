@@ -106,7 +106,7 @@ public class BudgetTrackerPanel extends JPanel {
         // Buttons and Panel
         JButton viewButton = new JButton();
         JButton editButton = new JButton();
-        AccountPanel aPanel = new AccountPanel();
+        AccountPanel aPanel = new AccountPanel(model);
 
         // View Button
         viewButton.setText("View Budget");

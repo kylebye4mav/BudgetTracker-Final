@@ -12,6 +12,25 @@ public class BudgetTrackerModel {
     /// Properties, Getters, Setters
     ///
 
+    private AccountPanel accountPanel;
+
+    public AccountPanel getAccountPanel() {
+        if (accountPanel == null) {
+            System.err.println("getAccountPanel() called when accountPanel is null in BudgetTrackerModel");
+        }
+        return accountPanel;
+    }
+
+    public void setAccountPanel(AccountPanel accountPanelIn) {
+        if (accountPanelIn != null) {
+            accountPanel = accountPanelIn;
+        }
+        else {
+            System.out.println("null accountPanelIn @ setAccountPanel(AccountPanel) in BudgetTrackerModel");
+        }
+    }
+
+
     private Account selectedAccount;
 
     public Account getSelectedAccount() {
@@ -25,6 +44,8 @@ public class BudgetTrackerModel {
     public void setSelectedAccount(Account selectedAccountIn) {
         if (selectedAccountIn != null) {
             selectedAccount = selectedAccountIn;
+            accountPanel.setAccount(selectedAccount);
+            loadAccountBudget();
         }
         else {
             System.out.println("null selectedAccountIn @ setSelectedAccount(Account) in BudgetTrackerModel");
@@ -47,6 +68,7 @@ public class BudgetTrackerModel {
         }
         else {
             System.err.println("null accountListIn @ setAccountList(ArrayList<Account>) in BudgetTrackerModel");
+            setAccountBudget(null);
         }
     }
 
@@ -62,6 +84,7 @@ public class BudgetTrackerModel {
     public void setAccountBudget(AccountBudget accountBudgetIn) {
         if (accountBudgetIn != null) {
             accountBudget = accountBudgetIn;
+            accountPanel.setAccountBudget(accountBudgetIn);
         }
         else {
             System.err.println("null accountBudgetIn @ setAccountBudget(AccountBudget) in BudgetTrackerModel");
@@ -71,6 +94,41 @@ public class BudgetTrackerModel {
     ///
     /// Functions
     ///
+
+    public Account findAccount(String userNameIn) {
+
+        if (accountList == null) {
+            System.err.println("null accountList @ retrieveAccountUserNames() in BudgetTrackerModel");
+            return null;
+        }
+
+        for (Account acc : getAccountList()) {
+            if (acc.getUserName().equals(userNameIn)) {
+                return acc;
+            }
+        }
+
+        System.err.format("Account not found with username \"%s\"", userNameIn);
+        return null;
+    }
+
+    public ArrayList<String> retrieveAccountUserNames() {
+        ArrayList<String> userNameList = new ArrayList<String>();
+
+        if (accountList != null) {
+            String userName;
+
+            for (Account acc : getAccountList()) {
+                userName = acc.getUserName();
+                userNameList.add(userName);
+            }
+        }
+        else {
+            System.err.println("null accountList @ retrieveAccountUserNames() in BudgetTrackerModel");
+        }
+
+        return userNameList;
+    }
 
     public boolean loadAccountIndex() {
         //  Check if AccountIndex.json exists.
@@ -175,6 +233,47 @@ public class BudgetTrackerModel {
         }
     }
 
+    public void loadAccountBudget() {
+        if (selectedAccount == null) {
+            System.err.println("null selectedAccount @ loadAccountBudget(Account) in BudgetTrackerFrame");
+            return;
+        }
+
+        String fileName = selectedAccount.toNameString().hashCode() + ".json";
+        File budgetFile = new File(fileName);
+
+        if (!budgetFile.exists()) {
+            System.out.format("@Warning: %s was not found for account \"%s\".\n", fileName, selectedAccount.toNameString());
+            System.out.format("@Warning: generating new file named \"%s\"\n", fileName);
+            AccountBudget.generateEmptyBalanceFile(fileName);
+            loadAccountBudget();
+            return;
+        }
+
+        ArrayList<String> content = new ArrayList<String>();
+        BufferedReader fileReader = null;
+        try { fileReader = new BufferedReader(new FileReader(budgetFile)); }
+        catch (FileNotFoundException fnfe) {}
+        String line;
+        try { while ((line = fileReader.readLine()) != null) content.add(line); }
+        catch (IOException ioe) {}
+
+        AccountBudget aBudget = AccountBudget.parseBudget(content);
+
+        if (aBudget == null) {
+            System.out.format("@Warning: for account \"%s\", %s failed to parse.\n", selectedAccount.toNameString(), fileName);
+            System.out.format("@Warning: generating new file named \"%s\"\n", fileName);
+            loadAccountBudget();
+            return;
+        }
+
+        setAccountBudget(aBudget);
+    }
+
+    public void openSignIn() {
+        SignInFrame signIn = new SignInFrame(this);
+    }
+
     public void printIndex() {
         ArrayList<String> content = indexToStringList();
 
@@ -195,6 +294,15 @@ public class BudgetTrackerModel {
         for (String line : content) {
             fileWriter.println(line);
         }
+        fileWriter.close();
+    }
+
+    ///
+    /// Events
+    ///
+
+    public void accountSelected() {
+        loadAccountBudget();
     }
 
     ///

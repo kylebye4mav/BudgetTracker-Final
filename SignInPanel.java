@@ -1,6 +1,8 @@
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
 
 /**
  * @author  Kyle Bye
@@ -50,17 +52,96 @@ public class SignInPanel extends JPanel {
 
     private JButton okButton;
 
-    ///         LEFT OFF HERE
-    ///
+    public JButton getOkButton() {
+        if (okButton == null) {
+            System.err.println("getOkButton() called when okButton is null in SignInPanel");
+        }
+        return okButton;
+    }
+
+    public void setOkButton(JButton okButtonIn) {
+        if (okButtonIn != null) okButton = okButtonIn;
+        else {
+            System.err.println(
+                "null okButtonIn @ setOkButton(JButton) in SignInPanel"
+                );
+        }
+    }
 
     private JButton cancelButton;
+
+    public JButton getCancelButton() {
+        if (cancelButton == null) {
+            System.err.println("getCancelButton() called when cancelButton is null in SignInPanel");
+        }
+        return cancelButton;
+    }
+
+    public void setCancelButton(JButton cancelButtonIn) {
+        if (cancelButtonIn != null) cancelButton = cancelButtonIn;
+        else {
+            System.err.println(
+                "null cancelButtonIn @ setCancelButton(JButton) in SignInPanel"
+                );
+        }
+    }
+
+    private BudgetTrackerModel model;
+
+    public BudgetTrackerModel getModel() {
+        if (model == null ) {
+            System.err.println(
+                "getModel() called when model is null in SignInPanel"
+                );
+        }
+        return model;
+    }
+
+    public void setModel(BudgetTrackerModel modelIn) {
+        if (modelIn != null) model = modelIn;
+        else {
+            System.err.println(
+                "null modelIn @ setModel(BudgetTrackerModel) in SignInPanel"
+                );
+        }
+    }
 
     ///
     /// Constructors
     ///
 
-    public SignInPanel() {
+    public SignInPanel(BudgetTrackerModel modelIn) {
         super();
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        
+        //  userNameField
+
+        JTextField uField = new JTextField();
+
+        //  passWordField
+
+        JTextField pField = new JTextField();
+
+        //  okButton
+
+        JButton oButton = new JButton();
+        oButton.setText("OK");
+
+        //  cancelButton
+
+        JButton cButton = new JButton();
+        cButton.setText("Cancel");
+
+        setModel(modelIn);
+        setUserNameField(uField);
+        setPassWordField(pField);
+        setOkButton(oButton);
+        setCancelButton(cButton);
+
+        add(uField);
+        add(pField);
+        add(oButton);
+        add(cButton);
     }
 
 }

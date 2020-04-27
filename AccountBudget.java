@@ -1,3 +1,5 @@
+import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -59,6 +61,92 @@ public class AccountBudget {
         return roundedBalance;
     }
 
+    public static AccountBudget parseBudget(ArrayList<String> content) {
+        AccountBudget aBudget;
+        double balance;
+        Date date;
+
+        ArrayList<String> contentCopy = new ArrayList<String>(content);
+        contentCopy.remove(contentCopy.size()-1);
+        contentCopy.remove(0);
+
+        //
+        //  Parsing balance line
+        //
+        //  line:\t"balance":"$1.23",
+        //
+        String balanceStr = contentCopy.get(0).trim().replace("\"", new String());
+        try {
+            balance = Double.parseDouble(balanceStr.split(":")[1].replace(",", new String()).replace("$", new String()));
+        }
+        catch (Exception e) { 
+            System.err.format("%s failed to parse", balanceStr); 
+            return null;
+        }
+
+        //
+        //  Parsing date line
+        //
+        //  line:\t"date":"1587925342153"
+        //
+        String dateStr = contentCopy.get(1).trim().replace("\"", new String());
+        try {
+            date = new Date(Long.parseLong(dateStr.split(":")[1]));
+        }
+        catch (Exception e) {
+            System.err.format("%s failed to parse", dateStr); 
+            return null;
+        }
+
+        aBudget = new AccountBudget(balance, date);
+        return aBudget;
+    }
+
+    public void printBudget(Account accountIn) {
+        ArrayList<String> content = budgetToStringList();
+
+        System.out.println("Account Number: " + accountIn.toNameString().hashCode());
+
+        for (String line : content) {
+            System.out.println(line);
+        }
+    }
+
+    public void writeBudget(Account accountIn) {
+        PrintWriter fileWriter = null;
+        String fileName = accountIn.toNameString().hashCode() + ".json";
+
+        try {
+            fileWriter = new PrintWriter(fileName);
+        }
+        catch (Exception e) {}
+
+        ArrayList<String> content = budgetToStringList();
+
+        for (String line : content) {
+            fileWriter.println(line);
+        }
+
+        fileWriter.close();
+    }
+
+    public static void generateEmptyBalanceFile(String fileName) {
+        PrintWriter fileWriter = null;
+
+        try {
+            fileWriter = new PrintWriter(fileName);
+        }
+        catch (Exception e) {}
+
+        ArrayList<String> content = emptyBudgetToStringList();
+
+        for (String line : content) {
+            fileWriter.println(line);
+        }
+
+        fileWriter.close();
+    }
+
     ///
     /// String Representations
     ///
@@ -86,6 +174,40 @@ public class AccountBudget {
         stringRep = String.format("%d", date.getTime());
 
         return stringRep;
+    }
+
+    public ArrayList<String> budgetToStringList() {
+        return budgetToStringList(this);
+    }
+
+    public static ArrayList<String> budgetToStringList(AccountBudget budget) {
+        ArrayList<String> content = new ArrayList<String>();
+
+        String formatter = "\t\"%s\":\"%s\"%s";
+        String balanceStr = String.format(formatter, "balance", budget.toBalanceString(), ",");
+        String dateStr = String.format(formatter, "date", budget.toDateString(), new String());
+
+        content.add("{");
+        content.add(balanceStr);
+        content.add(dateStr);
+        content.add("}");
+
+        return content;
+    }
+
+    public static ArrayList<String> emptyBudgetToStringList() {
+        ArrayList<String> content = new ArrayList<String>();
+
+        String formatter = "\t\"%s\":\"%s\"%s";
+        String balanceStr = String.format(formatter, "balance", "$0.00", ",");
+        String dateStr = String.format(formatter, "date", new Date().getTime(), new String());
+
+        content.add("{");
+        content.add(balanceStr);
+        content.add(dateStr);
+        content.add("}");
+
+        return content;
     }
 
     ///

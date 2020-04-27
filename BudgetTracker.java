@@ -15,11 +15,17 @@ public class BudgetTracker {
 
         BudgetTrackerFrame frame = new BudgetTrackerFrame();
 
+
+
         //  Todo:
-        //      1) Build GUI
-        //      2) Build Distribution with JSON
+        //      1) Build GUI 
+        //          ==> 50% Done.                    
+        //      2) Build Distribution with JSON   
+        //          ==> Done.
         //      3) Integrate Account System
+        //          ==> 50% Done.
         //      4) Incorporate Multi-Threading if possible.
+        //          ==> 0% Done.
         
         System.out.println("BudgetTracker ending...");
         return;

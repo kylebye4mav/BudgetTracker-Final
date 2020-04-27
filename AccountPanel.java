@@ -1,4 +1,5 @@
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -17,6 +18,26 @@ public class AccountPanel extends JPanel implements MouseListener {
     ///
     /// Properties, Getters, Setters
     ///
+
+    private BudgetTrackerModel model;
+
+    public BudgetTrackerModel getModel() {
+        if (model == null ) {
+            System.err.println(
+                "getModel() called when model is null in AccountPanel"
+                );
+        }
+        return model;
+    }
+
+    public void setModel(BudgetTrackerModel modelIn) {
+        if (modelIn != null) model = modelIn;
+        else {
+            System.err.println(
+                "null modelIn @ setModel(BudgetTrackerModel) in AccountPanel"
+                );
+        }
+    }
 
     private Account account;
 
@@ -86,6 +107,7 @@ public class AccountPanel extends JPanel implements MouseListener {
     public void setAccountBudgetLabel(JLabel accountBudgetLabelIn) {
         if (accountBudgetLabelIn != null) {
             accountBudgetLabel = accountBudgetLabelIn;
+            accountBudgetChanged();
         }
         else {
             System.err.println("null accountBudgetLabelIn @ setAccountBudgetLabel(JLabel) in AccountPanel");
@@ -140,6 +162,7 @@ public class AccountPanel extends JPanel implements MouseListener {
         System.out.println(
             "@Notification Sign in sequence activated by clicking AccountPanel.accountNameLabel"
             );
+        model.openSignIn();
     }
     public void mouseReleased(MouseEvent me) {}
 
@@ -147,8 +170,9 @@ public class AccountPanel extends JPanel implements MouseListener {
     /// Constructors
     ///
 
-    public AccountPanel() {
+    public AccountPanel(BudgetTrackerModel modelIn) {
         super();
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
 
         //  accountNameLabel
@@ -163,9 +187,12 @@ public class AccountPanel extends JPanel implements MouseListener {
         accountBudgetLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 32));
         add(accountBudgetLabel);
 
+        setModel(modelIn);
         setAccount(null);
         setAccountBudget(null);
         setVisible(true);
+
+        model.setAccountPanel(this);
     }
 
 }
