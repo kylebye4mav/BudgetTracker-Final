@@ -12,21 +12,21 @@ public class BudgetTrackerModel {
     /// Properties, Getters, Setters
     ///
 
-    private AccountPanel accountPanel;
+    private ArrayList<Updatable> updatables;
 
-    public AccountPanel getAccountPanel() {
-        if (accountPanel == null) {
-            System.err.println("getAccountPanel() called when accountPanel is null in BudgetTrackerModel");
+    public ArrayList<Updatable> getUpdatables() {
+        if (updatables == null) {
+            System.err.println("getUpdatables() called when updatables is null in BudgetTrackerModel");
         }
-        return accountPanel;
+        return updatables;
     }
 
-    public void setAccountPanel(AccountPanel accountPanelIn) {
-        if (accountPanelIn != null) {
-            accountPanel = accountPanelIn;
+    public void setUpdatables(ArrayList<Updatable> updatablesIn) {
+        if (updatablesIn != null) {
+            updatables = updatablesIn;
         }
         else {
-            System.out.println("null accountPanelIn @ setAccountPanel(AccountPanel) in BudgetTrackerModel");
+            System.out.println("null updatablesIn @ setUpdatables(ArrayList<Updatable>) in BudgetTrackerModel");
         }
     }
 
@@ -44,8 +44,8 @@ public class BudgetTrackerModel {
     public void setSelectedAccount(Account selectedAccountIn) {
         if (selectedAccountIn != null) {
             selectedAccount = selectedAccountIn;
-            accountPanel.setAccount(selectedAccount);
             loadAccountBudget();
+            update();
         }
         else {
             System.out.println("null selectedAccountIn @ setSelectedAccount(Account) in BudgetTrackerModel");
@@ -84,7 +84,6 @@ public class BudgetTrackerModel {
     public void setAccountBudget(AccountBudget accountBudgetIn) {
         if (accountBudgetIn != null) {
             accountBudget = accountBudgetIn;
-            accountPanel.setAccountBudget(accountBudgetIn);
         }
         else {
             System.err.println("null accountBudgetIn @ setAccountBudget(AccountBudget) in BudgetTrackerModel");
@@ -94,6 +93,29 @@ public class BudgetTrackerModel {
     ///
     /// Functions
     ///
+
+    public void update() {
+        if (updatables == null) {
+            System.err.println("update() called when updatables is null in BudgetTrackerModel");
+            return;
+        }
+        if (updatables.isEmpty()) {
+            System.out.println("@Notification: update() called when updatables is empty.");
+        }
+
+        ArrayList<Thread> threadList = new ArrayList<Thread>();
+        for (Updatable updatable : updatables) {
+            if (updatable instanceof Thread) {
+                threadList.add((Thread)updatable);
+            } 
+            else updatable.update();
+        }
+        try {
+            for (Thread t : threadList) t.start();
+            for (Thread t : threadList) t.join();
+        }
+        catch (Exception e) {}
+    }
 
     public Account findAccount(String userNameIn) {
 
@@ -337,6 +359,7 @@ public class BudgetTrackerModel {
     ///
 
     public BudgetTrackerModel() {
+        setUpdatables(new ArrayList<Updatable>());
         if (!loadAccountIndex()) {
             setAccountList(new ArrayList<Account>());
         }

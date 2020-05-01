@@ -13,7 +13,7 @@ import java.awt.event.MouseListener;
  * @author  Kyle Bye
  */
 @SuppressWarnings("serial")
-public class AccountPanel extends JPanel implements MouseListener {
+public class AccountPanel extends JPanel implements MouseListener, Updatable, Runnable {
 
     ///
     /// Properties, Getters, Setters
@@ -36,44 +36,6 @@ public class AccountPanel extends JPanel implements MouseListener {
             System.err.println(
                 "null modelIn @ setModel(BudgetTrackerModel) in AccountPanel"
                 );
-        }
-    }
-
-    private Account account;
-
-    public Account getAccount() {
-        if (account == null) {
-            System.err.println("getAccount() called when account is null in AccountPanel");
-        }
-        return account;
-    }
-
-    public void setAccount(Account accountIn) {
-        if (accountIn != null) {
-            account = accountIn;
-            accountChanged();
-        }
-        else {
-            System.err.println("null accountIn @ setAccount(Account) in AccountPanel");
-        }
-    }
-
-    private AccountBudget accountBudget;
-
-    public AccountBudget getAccountBudget() {
-        if (accountBudget == null) {
-            System.err.println("getAccountBudget() called when accountBudget is null in AccountPanel");
-        }
-        return accountBudget;
-    }
-
-    public void setAccountBudget(AccountBudget accountBudgetIn) {
-        if (accountBudgetIn != null) {
-            accountBudget = accountBudgetIn;
-            accountBudgetChanged();
-        }
-        else {
-            System.err.println("null accountBudgetIn @ setAccountBudget(AccountBudget) in AccountPanel");
         }
     }
 
@@ -114,6 +76,15 @@ public class AccountPanel extends JPanel implements MouseListener {
         }
     }
 
+    public void run() {
+        update();
+    }
+
+    public void update() {
+        accountChanged();
+        accountBudgetChanged();        
+    }
+
     ///
     /// Events
     ///
@@ -127,11 +98,13 @@ public class AccountPanel extends JPanel implements MouseListener {
 
         String accountName;
 
-        if (account == null) {
+        Account selectedAccount = model.getSelectedAccount();
+
+        if (selectedAccount == null) {
             System.err.println("accountChanged() called when account is null in AccountPanel");
             accountName = "Click here to Sign In";
         }
-        else accountName = account.toNameString();
+        else accountName = selectedAccount.toNameString();
 
         accountNameLabel.setText(accountName);
         repaint();
@@ -145,6 +118,8 @@ public class AccountPanel extends JPanel implements MouseListener {
         }
 
         String budget;
+        AccountBudget accountBudget = model.getAccountBudget();
+
         if (accountBudget == null) {
             System.err.println("accountChanged() called when account is null in AccountPanel");
             budget = new String();
@@ -175,6 +150,8 @@ public class AccountPanel extends JPanel implements MouseListener {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
 
+        setModel(modelIn);
+
         //  accountNameLabel
         setAccountNameLabel(new JLabel("Click here to sign in."));
         accountNameLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 24));
@@ -187,12 +164,11 @@ public class AccountPanel extends JPanel implements MouseListener {
         accountBudgetLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 32));
         add(accountBudgetLabel);
 
-        setModel(modelIn);
-        setAccount(null);
-        setAccountBudget(null);
         setVisible(true);
 
-        model.setAccountPanel(this);
+        //  Since AccountPanel is updatable because of its labels,
+        //  it will be added to the update list.
+        model.getUpdatables().add(this);
     }
 
 }
