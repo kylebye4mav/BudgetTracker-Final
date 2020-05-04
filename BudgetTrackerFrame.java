@@ -12,19 +12,19 @@ public class BudgetTrackerFrame extends JFrame {
     /// Properties, Getters, Setters
     ///
 
-    private JPanel panel;
+    private BudgetTrackerPanel panel;
 
-    public JPanel getPanel() {
+    public BudgetTrackerPanel getPanel() {
         if (panel == null) {
             System.err.println("getPanel() called when panel is null in BudgetTrackerFrame");
         }
         return panel;
     }
 
-    public void setPanel(JPanel panelIn) {
+    public void setPanel(BudgetTrackerPanel panelIn) {
         if (panelIn != null) panel = panelIn;
         else {
-            System.err.println("null panelIn @ setPanel(JPanel) in BudgetTrackerFrame");
+            System.err.println("null panelIn @ setPanel(BudgetTrackerPanel) in BudgetTrackerFrame");
         }
     }
 

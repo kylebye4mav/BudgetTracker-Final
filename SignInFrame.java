@@ -108,7 +108,7 @@ public class SignInFrame extends JFrame implements ActionListener {
         setModel(modelIn);
 
         //  Panel
-        SignInPanel pan = new SignInPanel(modelIn);
+        SignInPanel pan = new SignInPanel();
         pan.getOkButton().addActionListener(this);
         setPanel(pan);
         add(pan);

@@ -68,31 +68,11 @@ public class SignInPanel extends JPanel {
         }
     }
 
-    private BudgetTrackerModel model;
-
-    public BudgetTrackerModel getModel() {
-        if (model == null ) {
-            System.err.println(
-                "getModel() called when model is null in SignInPanel"
-                );
-        }
-        return model;
-    }
-
-    public void setModel(BudgetTrackerModel modelIn) {
-        if (modelIn != null) model = modelIn;
-        else {
-            System.err.println(
-                "null modelIn @ setModel(BudgetTrackerModel) in SignInPanel"
-                );
-        }
-    }
-
     ///
     /// Constructors
     ///
 
-    public SignInPanel(BudgetTrackerModel modelIn) {
+    public SignInPanel() {
         super();
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         
@@ -114,7 +94,6 @@ public class SignInPanel extends JPanel {
         JButton cButton = new JButton();
         cButton.setText("Cancel");
 
-        setModel(modelIn);
         setUserNameField(uField);
         setPassWordField(pField);
         setOkButton(oButton);

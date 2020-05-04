@@ -14,7 +14,7 @@ public class BudgetTracker {
         }
 
         BudgetTrackerFrame frame = new BudgetTrackerFrame();
-
+        InputFrame frameB = new InputFrame(frame.getPanel().getModel());
 
 
         //  Todo:

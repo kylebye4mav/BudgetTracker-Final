@@ -12,6 +12,8 @@ public class BudgetTrackerModel {
     /// Properties, Getters, Setters
     ///
 
+    private static final String indexURL = "https://kylebye-web.azurewebsites.net/AccountIndex.json";
+
     private ArrayList<Updatable> updatables;
 
     public ArrayList<Updatable> getUpdatables() {
@@ -195,7 +197,7 @@ public class BudgetTrackerModel {
     }
 
     public void downloadAccountIndex() {
-        HttpRequest request = new HttpRequest("https://kylebye-web.azurewebsites.net/AccountIndex.json");
+        HttpRequest request = new HttpRequest(indexURL);
         request.readUrl();
         PrintWriter fileWriter = null;
         try {
