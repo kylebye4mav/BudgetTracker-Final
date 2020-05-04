@@ -1,5 +1,6 @@
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -68,6 +69,24 @@ public class SignInPanel extends JPanel {
         }
     }
 
+    private JButton cancelButton;
+
+    public JButton getCancelButton() {
+        if (cancelButton == null) {
+            System.err.println("getCancelButton() called when cancelButton is null in SignInPanel");
+        }
+        return cancelButton;
+    }
+
+    public void setCancelButton(JButton cancelButtonIn) {
+        if (cancelButtonIn != null) cancelButton = cancelButtonIn;
+        else {
+            System.err.println(
+                "null cancelButtonIn @ setCancelButton(JButton) in SignInPanel"
+                );
+        }
+    }
+
     ///
     /// Constructors
     ///
@@ -75,33 +94,55 @@ public class SignInPanel extends JPanel {
     public SignInPanel() {
         super();
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        //  Instruction Label
+        JPanel instructionPanel = new JPanel();
+        JLabel instructionLabel = new JLabel();
+        instructionLabel.setText("<html><div style='text-align: center'>" +
+            "Please type in your login credentials below.<br><br>" + 
+            "Make sure CAPS LOCK is not on." + "<br><br>" +
+            "</html>"
+        );
+        instructionPanel.add(instructionLabel);
         
         //  userNameField
-
+        JPanel uPanel = new JPanel();
         JTextField uField = new JTextField();
+        uField.setText("<TYPE HERE>");
+        JLabel uLabel = new JLabel("Username:");
+        uPanel.add(uLabel);
+        uPanel.add(uField);
 
         //  passWordField
-
+        JPanel pPanel = new JPanel();
         JTextField pField = new JTextField();
+        pField.setText("<TYPE HERE>");
+        JLabel pLabel = new JLabel("Password:");
+        pPanel.add(pLabel);
+        pPanel.add(pField);
 
         //  okButton
-
         JButton oButton = new JButton();
         oButton.setText("OK");
 
         //  cancelButton
-
         JButton cButton = new JButton();
         cButton.setText("Cancel");
+
+        //  Button Panel
+        JPanel bPanel = new JPanel();
+        bPanel.add(oButton);
+        bPanel.add(cButton);
 
         setUserNameField(uField);
         setPassWordField(pField);
         setOkButton(oButton);
+        setCancelButton(cButton);
 
-        add(uField);
-        add(pField);
-        add(oButton);
-        add(cButton);
+        add(instructionPanel);
+        add(uPanel);
+        add(pPanel);
+        add(bPanel);
     }
 
 }

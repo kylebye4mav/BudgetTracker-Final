@@ -1,6 +1,5 @@
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JOptionPane;
@@ -46,10 +45,10 @@ public class SignInFrame extends JFrame implements ActionListener {
     }
 
     ///
-    /// Events
+    /// Functions
     ///
 
-    public void actionPerformed(ActionEvent ae) {
+    public void loginProcedure() {
         boolean logInSuccessful = true;
         String userName, passWord;
 
@@ -95,6 +94,14 @@ public class SignInFrame extends JFrame implements ActionListener {
         }
     }
 
+    ///
+    /// Events
+    ///
+
+    public void actionPerformed(ActionEvent ae) {
+        loginProcedure();
+    }
+
 
     ///
     /// Constructors
@@ -102,16 +109,25 @@ public class SignInFrame extends JFrame implements ActionListener {
 
     public SignInFrame(BudgetTrackerModel modelIn) {
         super();
+        FlowLayout layout = new FlowLayout(FlowLayout.CENTER, 5, 20);
         setTitle("Sign In");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setBounds(0, 0, 400, 500);
         setModel(modelIn);
 
+        //
         //  Panel
+        //      1.) Have OkButton begin the login procedure when clicked.
+        //      2.) Have CancelButton close and dispose this instance when clicked.
+        //  
         SignInPanel pan = new SignInPanel();
         pan.getOkButton().addActionListener(this);
+        pan.getCancelButton().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) { dispose(); }
+        });
         setPanel(pan);
         add(pan);
+        pack();
 
         setVisible(true);
     }

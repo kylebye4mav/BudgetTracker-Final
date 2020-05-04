@@ -40,6 +40,7 @@ public class BudgetTrackerFrame extends JFrame {
         super();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(xIn, yIn, widthIn, heightIn);
+        setTitle("Budget Tracker");
 
         Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());

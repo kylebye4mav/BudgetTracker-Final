@@ -1,6 +1,9 @@
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import java.awt.BorderLayout;
+import java.awt.Cursor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * @author  Kyle Bye
@@ -106,14 +109,21 @@ public class BudgetTrackerPanel extends JPanel {
         // Buttons and Panel
         JButton viewButton = new JButton();
         JButton editButton = new JButton();
+        editButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                model.openInput();
+            }
+        });
         AccountPanel aPanel = new AccountPanel(model);
 
         // View Button
         viewButton.setText("View Budget");
+        viewButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         add(viewButton, BorderLayout.LINE_START);
 
         // Edit Button
         editButton.setText("Deposit/Withdraw");
+        editButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         add(editButton, BorderLayout.LINE_END);
 
         // Account Panel

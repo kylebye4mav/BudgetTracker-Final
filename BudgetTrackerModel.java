@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 public class BudgetTrackerModel {
 
     ///
@@ -228,14 +230,14 @@ public class BudgetTrackerModel {
                 String[] accountPartParts = accountPart.trim().split(":");
                 if (accountPartParts[0].equals("Name")) {
                     String[] nameParts = accountPartParts[1].split(" ");
-                    firstName = nameParts[0];
-                    lastName = nameParts[1];
+                    firstName = nameParts[0].trim();
+                    lastName = nameParts[1].trim();
                 }
                 else if (accountPartParts[0].equals("UserName")) {
-                    userName = accountPartParts[1];
+                    userName = accountPartParts[1].trim();
                 }
                 else if (accountPartParts[0].equals("Key")) {
-                    key = Long.parseLong(accountPartParts[1]);
+                    key = Long.parseLong(accountPartParts[1].trim());
                 }
             }
 
@@ -295,7 +297,19 @@ public class BudgetTrackerModel {
     }
 
     public void openSignIn() {
+        System.out.println("@Notification: Opening SignInFrame...");
         SignInFrame signIn = new SignInFrame(this);
+    }
+
+    public void openInput() {
+        if (getSelectedAccount() != null) {
+            System.out.println("@Notification: Opening InputFrame...");
+            InputFrame input = new InputFrame(this);
+        }    
+        else {
+            System.out.println("@Warning: Attempt to open InputFrame without a selected account");
+            JOptionPane.showMessageDialog(null, "Please sign in first!", "Sign In!", JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     public void printIndex() {

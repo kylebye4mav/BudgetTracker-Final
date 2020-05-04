@@ -1,3 +1,6 @@
+import java.awt.Dimension;
+import java.awt.BorderLayout;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -14,8 +17,8 @@ public class InputPanel extends JPanel {
     /// Properties, Getters, Setters
     ///
 
-    private static final String DEPOSIT = "Deposit";
-    private static final String WITHDRAW = "Withdraw";
+    public static final String DEPOSIT = "Deposit";
+    public static final String WITHDRAW = "Withdraw";
 
     private static final char[] acceptableChars = {
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'
@@ -122,7 +125,7 @@ public class InputPanel extends JPanel {
             //      .....1 is not acceptable
             //      1.2 is acceptable
             if (input.indexOf(".") != input.lastIndexOf(".")) return false;
-            String[] inputParts = input.split(".");
+            String[] inputParts = input.split("\\.");
 
             //  Check if there are two numbers after the decimal
             //  Example:
@@ -154,15 +157,9 @@ public class InputPanel extends JPanel {
      * 
      * @param   input
      * @return  returns a String with '$' and '-' removed 
-     * in the first and/or second String positions.
      */
     public String cleanInput(String input) {
-        String cleansedInput = new String();
-
-        for (int i = 0; i<cleansedInput.length(); ++i) {
-            char c = cleansedInput.charAt(i);
-            if (i == 0 && (c == '$' |
-        }
+        return input.replace("$", "").replace("-", "");
     }
 
     ///
@@ -171,6 +168,7 @@ public class InputPanel extends JPanel {
 
     public InputPanel() {
         super();
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         //  comboBox
         JComboBox<String> combo = new JComboBox<String>();
@@ -178,15 +176,19 @@ public class InputPanel extends JPanel {
         combo.addItem(WITHDRAW);
 
         //  Instruction Label
+        JPanel instructionPanel = new JPanel();
+        instructionPanel.setLayout(new BorderLayout());
         JLabel instructionLabel = new JLabel();
-        String instructions = "Using the dropdown menu below, please indicate whether this " +
-        "is a deposit or a withdraw. Afterwards, type the amount you want to deposit or " +
-        "withdraw in the box below. Please do not type in a '$' or a '-' character as those " +
-        "are dealt with beforehand.";
+        String instructions = "<html><div style='text-align: center'>Using the dropdown menu below,<br>please indicate whether this " +
+        "is a deposit or a withdraw.<br><br>Afterwards, type the amount you want to<br>deposit or " +
+        "withdraw in the box below.<br><br>Please do not type in a '$' or a '-'<br>character as those " +
+        "are dealt with beforehand.</html>";
         instructionLabel.setText(instructions);
+        instructionPanel.add(instructionLabel, BorderLayout.CENTER);
 
         //  inputField
         JTextField input = new JTextField();
+        //input.setMaximumSize(new Dime);
         input.setText("Type amount here");
 
         //  okButton
@@ -199,8 +201,8 @@ public class InputPanel extends JPanel {
         setOkButton(ok);
 
         //  Add Components
+        add(instructionPanel);
         add(comboBox);
-        add(instructionLabel);
         add(inputField);
         add(ok);
     }

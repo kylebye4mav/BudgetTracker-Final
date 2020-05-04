@@ -1,4 +1,6 @@
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -53,33 +55,65 @@ public class InputFrame extends JFrame implements ActionListener {
     }
 
     ///
+    /// Functions
+    ///
+
+    public void processInput() {
+        if (panel.isNull()) {
+            System.err.println("Cannot process input in InputPanel due to null componenets");
+        }
+
+        System.out.println("@Notification: Managing user input in InputFrame.");
+        
+        String userInput = panel.getInputField().getText();
+        userInput = panel.cleanInput(userInput);
+        if (panel.acceptableInput(userInput)) {
+            try {
+                double val = Double.parseDouble(userInput);
+                if (panel.getComboBox().getSelectedItem().equals(InputPanel.WITHDRAW)){
+                    val *= -1;
+                }
+
+                AccountBudget budget = getModel().getAccountBudget();
+                budget.setBalance(budget.getBalance() + val);
+                budget.writeBudget(model.getSelectedAccount());
+                model.update();
+                this.dispose();
+            }
+            catch (Exception e) {}
+        }
+        else {
+            JOptionPane.showMessageDialog(null, "The value that you provided is not valid.", "Invalid Input!", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    ///
     /// Events
     ///
 
     public void actionPerformed(ActionEvent ae) {
-        if (panel.isNull()) {
-            System.err.println("Cannot process input in InputPanel due to null componenets");
-        }
-        
-        String userInput = panel.getInputField().getText();
-        userInput = panel.cleanInput(userInput);
+        processInput();
     }
 
     ///
     /// Constructors
     ///
 
-    public InputFrame(BudgetTrackerModel model) {
+    public InputFrame(BudgetTrackerModel modelIn) {
         super();
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setBounds(0, 0, 600, 400);
+        setBounds(0, 0, 1920, 1080);
+        setTitle("Editing Budget");
 
         InputPanel panel = new InputPanel();
         panel.getOkButton().addActionListener(this);
 
         setPanel(panel);
+        setModel(modelIn);
 
         add(panel);
+
+        pack();
 
         setVisible(true);
     }
