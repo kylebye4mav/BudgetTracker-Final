@@ -1,6 +1,9 @@
 import java.io.IOException;
 import java.io.PrintWriter;
 /**
+ * This class holds the first name, last name, username,
+ * and key of a user.
+ * 
  * @author  Kyle Bye
  */
 public class Account {
@@ -53,6 +56,12 @@ public class Account {
     /// Functions
     ///
 
+    /**
+     * Returns true if all the fields of this instance
+     * are non null or default.
+     * 
+     * @return true if valid. false if not.
+     */
     public boolean validate() {
         boolean isValid = true;
 
@@ -72,10 +81,23 @@ public class Account {
         return isValid;
     }
 
+    /**
+     * Returns the hashcode of the parameter.
+     * 
+     * @param   passWordIn to be translated to hashcode.
+     * @return  hashcode version of parameter.
+     */
     public static long generateKey(String passWordIn) {
         return passWordIn.hashCode();
     }
 
+    /**
+     * Compares the hashcode values of this instance and parameter
+     * passwords.
+     * 
+     * @param   passWordIn  password to compare to the key of this instance.
+     * @return  returns true if keys match. Otherwise, false is returned.
+     */
     public boolean compareKey(String passWordIn) {
         long correctKey = getKey();
         long providedKey = generateKey(passWordIn);
@@ -83,11 +105,28 @@ public class Account {
         return correctKey == providedKey;
     }
 
+    /**
+     * Instantiates an Account instance and calls
+     * <code>generateAccountJSON(Account accountIn)</code>
+     * 
+     * @param firstNameIn
+     * @param lastNameIn
+     * @param userNameIn
+     * @param keyIn
+     * @return  true if succeeded. false if not.
+     * @see Account#generateAccountJSON(Account)
+     */
     public static boolean generateAccountJSON(String firstNameIn, String lastNameIn, String userNameIn, long keyIn) {
         Account account = new Account(firstNameIn, lastNameIn, userNameIn, keyIn);
         return generateAccountJSON(account);
     }
 
+    /**
+     * Writes contents of this instance into a json file where the initials are the file name.
+     * 
+     * @param   accountIn   account to write to file.
+     * @return  true if succeeded. false if not.
+     */
     public static boolean generateAccountJSON(Account accountIn) {
         System.out.println("Generating New Account JSON File...");
         boolean isSuccessful = true;
@@ -144,6 +183,12 @@ public class Account {
         return stringRep;
     }
 
+    /**
+     * Returns the first name and last name of this instance
+     * into a String with a space in between.
+     * 
+     * @return  first name and last name with space in between.
+     */
     public String toNameString() {
         String stringRep = new String();
 

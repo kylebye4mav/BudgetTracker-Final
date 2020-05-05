@@ -1,4 +1,3 @@
-import java.awt.Dimension;
 import java.awt.BorderLayout;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -154,12 +153,14 @@ public class InputPanel extends JPanel {
     }
 
     /**
+     * Takes a String and returns a String with '$' and
+     * '-' characters removed.
      * 
-     * @param   input
+     * @param   input   string to be cleansed.
      * @return  returns a String with '$' and '-' removed 
      */
-    public String cleanInput(String input) {
-        return input.replace("$", "").replace("-", "");
+    public String cleanInput(String inputIn) {
+        return inputIn.replace("$", "").replace("-", "");
     }
 
     ///
@@ -188,7 +189,6 @@ public class InputPanel extends JPanel {
 
         //  inputField
         JTextField input = new JTextField();
-        //input.setMaximumSize(new Dime);
         input.setText("Type amount here");
 
         //  okButton

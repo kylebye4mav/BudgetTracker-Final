@@ -1,10 +1,17 @@
 /**
+ * This program is responsible for helping a user manage a budget.
  * @author  Kyle Bye
  */
 public class BudgetTracker {
+    /**
+     * Program Execution begins here.
+     * @param   args    program args.
+     */
     public static void main(String[] args) {
         try {
             System.out.println("BudgetTracker starting...");
+            BudgetTrackerFrame frame = new BudgetTrackerFrame();
+            System.out.println("BudgetTracker ending...");
         }
         catch (Exception e) {
             System.err.format(
@@ -12,21 +19,6 @@ public class BudgetTracker {
                 e.getMessage()
             );
         }
-
-        BudgetTrackerFrame frame = new BudgetTrackerFrame();
-
-
-        //  Todo:
-        //      1) Build GUI 
-        //          ==> 50% Done.                    
-        //      2) Build Distribution with JSON   
-        //          ==> Done.
-        //      3) Integrate Account System
-        //          ==> 50% Done.
-        //      4) Incorporate Multi-Threading if possible.
-        //          ==> 0% Done.
-        
-        System.out.println("BudgetTracker ending...");
         return;
     }
 }

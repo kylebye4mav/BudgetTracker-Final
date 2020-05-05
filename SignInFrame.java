@@ -1,11 +1,14 @@
 import javax.swing.JFrame;
-import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JOptionPane;
 
 /**
+ * This class is responsible for hosting the window
+ * for the sign in procedure.
+ * 
  * @author  Kyle Bye
+ * @see BudgetTrackerModel
  */
 @SuppressWarnings("serial")
 public class SignInFrame extends JFrame implements ActionListener {
@@ -48,6 +51,17 @@ public class SignInFrame extends JFrame implements ActionListener {
     /// Functions
     ///
 
+    /**
+     * Takes user input from textfields of the panel, 
+     * verifies the credentials, and initates the sign in sequence
+     * by calling <code>model.setSelectedAccount(Account)</code>.
+     * <br><br>
+     * If the verification fails, a notification message is printed
+     * and window pops up informing the user that the credentials are
+     * invalid.
+     * 
+     * @see BudgetTrackerModel#setSelectedAccount(Account)
+     */
     public void loginProcedure() {
         boolean logInSuccessful = true;
         String userName, passWord;
@@ -98,6 +112,9 @@ public class SignInFrame extends JFrame implements ActionListener {
     /// Events
     ///
 
+    /**
+     * Calls <code>loginProcedure()</code>
+     */
     public void actionPerformed(ActionEvent ae) {
         loginProcedure();
     }
@@ -109,7 +126,6 @@ public class SignInFrame extends JFrame implements ActionListener {
 
     public SignInFrame(BudgetTrackerModel modelIn) {
         super();
-        FlowLayout layout = new FlowLayout(FlowLayout.CENTER, 5, 20);
         setTitle("Sign In");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setBounds(0, 0, 400, 500);

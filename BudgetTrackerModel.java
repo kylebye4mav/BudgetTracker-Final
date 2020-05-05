@@ -5,9 +5,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-
 import javax.swing.JOptionPane;
 
+/**
+ * This class is reponsible for handling all the events, data,
+ * and all the gui components of the BudgetTracker application.
+ * 
+ * @author  Kyle Bye
+ */
 public class BudgetTrackerModel {
 
     ///
@@ -98,6 +103,12 @@ public class BudgetTrackerModel {
     /// Functions
     ///
 
+    /**
+     * Calls <code>update()</code> of every updateable object from
+     * the updatableList of this instance.
+     * 
+     * @see Updatable
+     */
     public void update() {
         if (updatables == null) {
             System.err.println("update() called when updatables is null in BudgetTrackerModel");
@@ -121,6 +132,15 @@ public class BudgetTrackerModel {
         catch (Exception e) {}
     }
 
+    /**
+     * Takes a username String and checks every Account of accountList
+     * if an account exists with the provided username.
+     * 
+     * @param   userNameIn  username to look for in accountList.
+     * @return  Account instance if account with provided username exists.
+     *          null otherwise.
+     * @see Account
+     */
     public Account findAccount(String userNameIn) {
 
         if (accountList == null) {
@@ -138,6 +158,13 @@ public class BudgetTrackerModel {
         return null;
     }
 
+    /**
+     * Takes all the account instances and returns an arraylist of
+     * Strings of the username of all the instances.
+     * 
+     * @return  ArrayList of usernames.
+     * @see Account
+     */
     public ArrayList<String> retrieveAccountUserNames() {
         ArrayList<String> userNameList = new ArrayList<String>();
 
@@ -156,6 +183,18 @@ public class BudgetTrackerModel {
         return userNameList;
     }
 
+    /**
+     * Looks for a file called "AccountIndex.json".
+     * If it exists, read and parse the data into account objects
+     * to be stored in accountList.
+     * Otherwise, download the json file from my website and recall
+     * the method.
+     * 
+     * This method is multi-threaded.
+     * 
+     * @return  true if succeeded. false if failed.
+     * @see Account
+     */
     public boolean loadAccountIndex() {
         //  Check if AccountIndex.json exists.
         //  If so, load it. Otherwise, download it.
@@ -185,8 +224,24 @@ public class BudgetTrackerModel {
             lines.remove(0);
 
             setAccountList(new ArrayList<Account>());
+
             //  Parse each Account line
-            for (String accountLine : lines) parseAccount(accountLine);
+            //  Multi-Threading is used here.
+            try {
+                ArrayList<Thread> threadList = new ArrayList<Thread>();
+                ArrayList<AccountParser> accountParseList = new ArrayList<AccountParser>();
+                for (String accountLine : lines) {
+                    AccountParser ap = new AccountParser(accountLine);
+                    threadList.add(new Thread(ap));
+                    accountParseList.add(ap);
+                }
+                for (Thread t : threadList) t.start();
+                for (Thread t : threadList) t.join();
+                for (AccountParser ap : accountParseList) {
+                    if (ap.getAccount() != null) accountList.add(ap.getAccount());
+                }
+            }
+            catch(Exception e) { System.err.println("MT went wrong!"); }
             if (accountList.size() == 0) successful = false;
         }
         else {
@@ -198,6 +253,10 @@ public class BudgetTrackerModel {
         return successful;
     }
 
+    /**
+     * Calls an <code>HttpRequest</code> to my website and writes the file.
+     * Calls <code>loadAccountIndex()</code>.
+     */
     public void downloadAccountIndex() {
         HttpRequest request = new HttpRequest(indexURL);
         request.readUrl();
@@ -213,6 +272,13 @@ public class BudgetTrackerModel {
         loadAccountIndex();
     }
 
+    /**
+     * Takes a line from the "AccountIndex.json" and parsed the line
+     * into an Account instance to be placed into accountList. A warning 
+     * message is printed if a line fails to parse.
+     * 
+     * @param   accountLine String to parse into an Account instance.
+     */
     public void parseAccount(String accountLine) {
         try {
             String firstName = null;
@@ -247,18 +313,29 @@ public class BudgetTrackerModel {
             }
             else {
                 System.err.format(
-                    "%s failed to parse in parseAccount(String) of BudgetTrackerModel\n", accountLine
+                    "@Warning: %s failed to parse in parseAccount(String) of BudgetTrackerModel\n", accountLine
                 );
             }
         }
         catch (Exception e) {
             System.err.format(
-                "%s failed to parse in parseAccount(String) of BudgetTrackerModel\n", accountLine
+                "@Warning: %s failed to parse in parseAccount(String) of BudgetTrackerModel\n", accountLine
                 );
             return;
         }
     }
 
+    /**
+     * Looks for an AccountBudget file that corresponds with selectedAccount,
+     * parse the file and sets the accountBudget instance.
+     * If the file does not exist, an empty AccountBudget file is created,
+     * a warning message is printed, and this method is recalled.
+     * <br><br>
+     * If selectedAccount is null. This method ends without processing
+     * and a null message is printed.
+     * 
+     * @see AccountBudget
+     */
     public void loadAccountBudget() {
         if (selectedAccount == null) {
             System.err.println("null selectedAccount @ loadAccountBudget(Account) in BudgetTrackerFrame");
@@ -296,11 +373,25 @@ public class BudgetTrackerModel {
         setAccountBudget(aBudget);
     }
 
+    /**
+     * Instantiates a <code>SignInFrame</code> instance and
+     * prints a notification message.
+     */
     public void openSignIn() {
         System.out.println("@Notification: Opening SignInFrame...");
         SignInFrame signIn = new SignInFrame(this);
     }
 
+    /**
+     * Instantiates a <code>InputFrame</code> instance and
+     * prints a notification message only if selectedAccount
+     * is not null.
+     * <br><br>
+     * Otherwise, a warning message is printed and a popup window
+     * appears to inform the user that the user must sign in.
+     * 
+     * @see InputFrame
+     */
     public void openInput() {
         if (getSelectedAccount() != null) {
             System.out.println("@Notification: Opening InputFrame...");
@@ -312,6 +403,12 @@ public class BudgetTrackerModel {
         }
     }
 
+    /**
+     * Writes "AccountIndex.json" to the console including every
+     * account in accountList.
+     * 
+     * @see Account
+     */
     public void printIndex() {
         ArrayList<String> content = indexToStringList();
 
@@ -320,6 +417,12 @@ public class BudgetTrackerModel {
         }
     }
 
+    /**
+     * Writes "AccountIndex.json" including every
+     * account in accountList to the console.
+     * 
+     * @see Account
+     */
     public void writeIndex() {
         PrintWriter fileWriter = null;
         try {
@@ -339,6 +442,11 @@ public class BudgetTrackerModel {
     /// Events
     ///
 
+    /**
+     * Calls <code>loadAccountBudget()</code>.
+     * 
+     * @see BudgetTrackerModel#loadAccountBudget()
+     */
     public void accountSelected() {
         loadAccountBudget();
     }
@@ -347,10 +455,25 @@ public class BudgetTrackerModel {
     /// String Representations
     ///
 
+    /**
+     * Calls and returns the return list of 
+     * <code>indexToStringList(ArrayList<Account> accountListIn)
+     * </code>
+     * 
+     * @return  returns a list of strings that represents the AccountIndex.
+     * @see Account
+     * @see BudgetTrackerModel#indexToStringList(ArrayList)
+     */
     public ArrayList<String> indexToStringList() {
         return indexToStringList(accountList);
     }
 
+    /**
+     * Returns a list of strings that represents the AccountIndex.
+     * 
+     * @param   accountListIn   list of Accounts to write to a string list.
+     * @return  returns a list of strings that represents the AccountIndex.
+     */
     public static ArrayList<String> indexToStringList(ArrayList<Account> accountListIn) {
         //  In Format:
         //  [

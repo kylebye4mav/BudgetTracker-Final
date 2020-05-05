@@ -2,15 +2,24 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 /**
+ * This class is responsible for displaying the account data and
+ * account budget data from <code>BudgetTrackerModel</code>. Also
+ * holds a clickable label to start the sign in sequence of the
+ * program.
+ * 
  * @author  Kyle Bye
+ * @see BudgetTrackerModel
+ * @see MouseListener
+ * @see Updatable
+ * @see Runnable
  */
 @SuppressWarnings("serial")
 public class AccountPanel extends JPanel implements MouseListener, Updatable, Runnable {
@@ -76,10 +85,26 @@ public class AccountPanel extends JPanel implements MouseListener, Updatable, Ru
         }
     }
 
+    ///
+    /// Functions
+    ///
+
+    /**
+     * Calls <code>update()</code>
+     * 
+     * @see AccountPanel#update()
+     */
     public void run() {
         update();
     }
 
+    /**
+     * Calls <code>accountChange()</code> and
+     * <code>accountBudgetChanged</code>.
+     * 
+     * @see AccountPanel#accountChanged()
+     * @see AccountPanel#accountBudgetChanged()
+     */
     public void update() {
         accountChanged();
         accountBudgetChanged();        
@@ -89,6 +114,14 @@ public class AccountPanel extends JPanel implements MouseListener, Updatable, Ru
     /// Events
     ///
 
+    /**
+     * Updates the accountLabel text if accountNameLabel and
+     * selectedAccount of model is not null.
+     * <br><br>
+     * Prints warning message if accountNameLabel is null
+     * 
+     * @see BudgetTrackerModel
+     */
     public void accountChanged() {
         //  Null Check accountNameLabel
         if (accountNameLabel == null) {
@@ -110,6 +143,14 @@ public class AccountPanel extends JPanel implements MouseListener, Updatable, Ru
         repaint();
     }
 
+    /**
+     * Updates the accountBudgetLabel text if accountBudgetLabel and
+     * accountBudget of model is not null.
+     * <br><br>
+     * Prints warning message if accountBudget is null
+     * 
+     * @see BudgetTrackerModel
+     */
     public void accountBudgetChanged() {
         //  Null Check accountNameLabel
         if (accountBudgetLabel == null) {
@@ -152,17 +193,28 @@ public class AccountPanel extends JPanel implements MouseListener, Updatable, Ru
 
         setModel(modelIn);
 
+        // Label Panel
+        JPanel labelPanel = new JPanel();
+        labelPanel.add(new JPanel());
+        labelPanel.setLayout(new BoxLayout(labelPanel, BoxLayout.Y_AXIS));
+
         //  accountNameLabel
         setAccountNameLabel(new JLabel("Click here to sign in."));
-        accountNameLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 24));
+        accountNameLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 40));
         accountNameLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
         accountNameLabel.addMouseListener(this);
-        add(accountNameLabel);
+        accountNameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        labelPanel.add(accountNameLabel);
 
         //  accountBudgetLabel
         setAccountBudgetLabel(new JLabel());
-        accountBudgetLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 32));
-        add(accountBudgetLabel);
+        accountBudgetLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 90));
+        accountBudgetLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        labelPanel.add(accountBudgetLabel);
+
+        //  Label Panel Finishes
+        labelPanel.add(new JPanel());
+        add(labelPanel);
 
         setVisible(true);
 

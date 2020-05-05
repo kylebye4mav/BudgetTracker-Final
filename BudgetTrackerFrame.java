@@ -1,8 +1,9 @@
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Container;
 /**
+ * Main Window of BudgetTracker.
+ * 
  * @author  Kyle Bye
  */
 @SuppressWarnings("serial")
@@ -47,7 +48,6 @@ public class BudgetTrackerFrame extends JFrame {
         BudgetTrackerPanel panel = new BudgetTrackerPanel();
         setPanel(panel);
         contentPane.add(panel);
-
 
         setVisible(true);
     }

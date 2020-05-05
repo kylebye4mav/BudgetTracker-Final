@@ -58,9 +58,20 @@ public class InputFrame extends JFrame implements ActionListener {
     /// Functions
     ///
 
+    /**
+     * Takes the user input from the <code>InputField</code>'s,
+     * checks the input utilizing <code>InputPanel</code>'s <code>
+     * acceptableInput(String)</code> method and updates <code>
+     * AccountPanel</code>'s labels if the input is acceptable.
+     * Otherwise, a warning window will pop up.
+     * <br><br>
+     * This method will not exit without doing anything if panel or 
+     * any of its components are null.
+     */
     public void processInput() {
         if (panel.isNull()) {
             System.err.println("Cannot process input in InputPanel due to null componenets");
+            return;
         }
 
         System.out.println("@Notification: Managing user input in InputFrame.");
@@ -91,6 +102,11 @@ public class InputFrame extends JFrame implements ActionListener {
     /// Events
     ///
 
+    /**
+     * Executes <code>processInput()</code>.
+     * 
+     * @see InputFrame#processInput()
+     */
     public void actionPerformed(ActionEvent ae) {
         processInput();
     }

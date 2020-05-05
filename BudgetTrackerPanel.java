@@ -6,6 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
+ * This class is responsible for handling the button
+ * and label components.
+ * 
  * @author  Kyle Bye
  */
 @SuppressWarnings("serial")
@@ -55,26 +58,6 @@ public class BudgetTrackerPanel extends JPanel {
         }
     }
 
-    private JButton viewBudgetButton;
-
-    public JButton getViewBudgetButton() {
-        if (viewBudgetButton == null ) {
-            System.err.println(
-                "getViewBudgetButton() called when viewBudgetButton is null in BudgetTrackerPanel"
-                );
-        }
-        return viewBudgetButton;
-    }
-
-    public void setViewBudgetButton(JButton viewBudgetButtonIn) {
-        if (viewBudgetButtonIn != null) viewBudgetButton = viewBudgetButtonIn;
-        else {
-            System.err.println(
-                "null viewBudgetButtonIn @ setViewBudgetButton(JButton) in BudgetTrackerPanel"
-                );
-        }
-    }
-
     private JButton editBudgetButton;
 
     public JButton getEditBudgetButton() {
@@ -83,7 +66,7 @@ public class BudgetTrackerPanel extends JPanel {
                 "getEditBudgetButton() called when editBudgetButton is null in BudgetTrackerPanel"
                 );
         }
-        return viewBudgetButton;
+        return editBudgetButton;
     }
 
     public void setEditBudgetButton(JButton editBudgetButtonIn) {
@@ -107,7 +90,6 @@ public class BudgetTrackerPanel extends JPanel {
         setModel(new BudgetTrackerModel());
 
         // Buttons and Panel
-        JButton viewButton = new JButton();
         JButton editButton = new JButton();
         editButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -116,15 +98,10 @@ public class BudgetTrackerPanel extends JPanel {
         });
         AccountPanel aPanel = new AccountPanel(model);
 
-        // View Button
-        viewButton.setText("View Budget");
-        viewButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        add(viewButton, BorderLayout.LINE_START);
-
         // Edit Button
         editButton.setText("Deposit/Withdraw");
         editButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        add(editButton, BorderLayout.LINE_END);
+        add(editButton, BorderLayout.SOUTH);
 
         // Account Panel
         add(aPanel, BorderLayout.CENTER);

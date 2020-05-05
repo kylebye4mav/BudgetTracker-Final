@@ -6,9 +6,14 @@ import javax.swing.JTextField;
 
 
 /**
+ * This class is responsible for managing user name,
+ * passwords, and buttons for the <code>SignInFrame</code>
+ * window.
+ * 
  * @author  Kyle Bye
+ * @see SignInFrame
  */
-@SuppressWarnings("Serial")
+@SuppressWarnings("serial")
 public class SignInPanel extends JPanel {
 
     ///
